@@ -423,7 +423,7 @@ begin
 
     -- Reset Sequencer ------------------------------------------------------------------------
     -- -------------------------------------------------------------------------------------------
-    neorv32_sys_reset_inst: entity neorv32.neorv32_sys_reset
+    neorv32_sys_reset_inst: entity work.neorv32_sys_reset
     port map (
       clk_i       => clk_i,
       rstn_ext_i  => rstn_i,
