@@ -25,7 +25,7 @@
 
 /** Memory base address for the executable */
 #ifndef EXE_BASE_ADDR
-  #define EXE_BASE_ADDR 0xF0000000UL
+  #define EXE_BASE_ADDR 0x00000000UL
 #endif
 
 /* -------- UART interface -------- */
@@ -458,7 +458,7 @@ void start_app(void) {
   neorv32_cpu_csr_clr(CSR_MSTATUS, 1 << CSR_MSTATUS_MIE);
 
   register uint32_t app_base = (uint32_t)EXE_BASE_ADDR; // default = start at beginning of IMEM
-  PRINT_TEXT("@egoncu-- Booting from ");
+  PRINT_TEXT("Booting from ");
   PRINT_XNUM(app_base);
   PRINT_TEXT("...\n\n");
 
@@ -596,58 +596,6 @@ void get_exe(int src) {
   else {
     PRINT_TEXT("OK");
     exe_available = size; // store exe size
-    
-    // Verify SDRAM is actually working with a simple test pattern
-    PRINT_TEXT("\nVerifying SDRAM at ");
-    PRINT_XNUM((uint32_t)EXE_BASE_ADDR);
-    PRINT_TEXT("... ");
-    
-    // Use an area beyond the executable for testing
-    volatile uint32_t *test_addr = (volatile uint32_t*)(EXE_BASE_ADDR + size + 64);
-    int verify_error = 0;
-    
-    // Simple test pattern
-    uint32_t test_patterns[4] = {
-      0xAAAAAAAA,
-      0x55555555,
-      0xDEADBEEF,
-      0x12345678
-    };
-    
-    // Write test patterns
-    for (int i = 0; i < 4; i++) {
-      test_addr[i] = test_patterns[i];
-    }
-    
-    // Read back and verify
-    for (int i = 0; i < 4; i++) {
-      uint32_t read_val = test_addr[i];
-      if (read_val != test_patterns[i]) {
-        verify_error = 1;
-        PRINT_TEXT("\nSDRAM verification failed!\n");
-        PRINT_TEXT("Addr: ");
-        PRINT_XNUM((uint32_t)&test_addr[i]);
-        PRINT_TEXT(" Expected: ");
-        PRINT_XNUM(test_patterns[i]);
-        PRINT_TEXT(" Read: ");
-        PRINT_XNUM(read_val);
-        break;
-      }
-    }
-    
-    if (!verify_error) {
-      PRINT_TEXT("SDRAM verified OK");
-    }
-
-    PRINT_XNUM(pnt[0]);
-    PRINT_TEXT("...\n");
-    PRINT_XNUM(pnt[1]);
-    PRINT_TEXT("...\n");
-    PRINT_XNUM(pnt[2]);
-    PRINT_TEXT("...\n");
-    PRINT_XNUM(pnt[3]);
-    PRINT_TEXT("...\n");
-    
   }
 
   // we might have caches so the executable might not yet have fully arrived in main memory yet

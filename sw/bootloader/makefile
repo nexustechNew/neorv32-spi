@@ -1,13 +1,8 @@
 # Bootloader (for BOOTROM) makefile.
 
 # Minimal RISC-V ISA (E!) only
-
-# RISC-V compiler settings
-RISCV_PREFIX ?= /opt/riscv/bin/riscv32-unknown-elf-
-
-# RISC-V CPU configuration
-MARCH = rv32i_zicsr_zifencei
-MABI  = ilp32
+MARCH = rv32e_zicsr_zifencei
+MABI = ilp32e
 
 # Optimize for minimal size
 EFFORT = -Os
@@ -17,7 +12,7 @@ EFFORT = -Os
 # Define MAKE_BOOTLOADER for SW library (reduces footprint)
 # Enable link-time-optimization
 USER_FLAGS += \
--Wl,--defsym,__neorv32_rom_size=6k \
+-Wl,--defsym,__neorv32_rom_size=4k \
 -Wl,--defsym,__neorv32_rom_base=0xFFE00000 \
 -Wl,--defsym,__neorv32_ram_size=256 \
 -DMAKE_BOOTLOADER \
@@ -27,7 +22,7 @@ USER_FLAGS += \
 # Warning: Enabling them all while sticking to the minimal RISC-V ISA will result in a too-large binary!
 
 #USER_FLAGS += -DUART_EN=1
-#USER_FLAGS += -DUART_BAUD=19200
+#USER_FLAGS += -DUART_EN=19200
 #USER_FLAGS += -DUART_HW_HANDSHAKE_EN=0
 
 #USER_FLAGS += -DSTATUS_LED_EN=1
